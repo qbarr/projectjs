@@ -1,10 +1,12 @@
 import React, { useEffect, useState,useRef } from "react";
 import styled from '@emotion/styled'
+
 const MessageList = styled.div`
     margin:auto;
     max-width:1000px;
     width:calc(100% - 91px);
     margin-bottom:90px;
+    
 `
 
 const LineContainer = styled.div`
@@ -25,8 +27,9 @@ const MessageContainer = styled.div`
     background-color:${props => props.color};
     text-align:left;
     overflow-wrap:break-word;
-    height: ${props => props.nbChar < 5 ? '38px' : props.nbChar < 8 ? '84px' : props.nbChar < 12 ? '155px' : '121px'}; 
-    width: ${props => props.nbChar < 5 ? '116px' : props.nbChar < 8 ? '206px' : props.nbChar < 12 ? '253px' : '323px'}; 
+    z-index: 100;
+    height: ${props => props.nbChar < 5 ? '26.6px' : props.nbChar < 8 ? '58.8px' : props.nbChar < 12 ? '108.5px' : '84.7px'}; 
+    width: ${props => props.nbChar < 5 ? '81.2px' : props.nbChar < 8 ? '144.2px' : props.nbChar < 12 ? '177px' : '226px'}; 
 `
 
 const Input = styled.span`
@@ -34,7 +37,7 @@ const Input = styled.span`
 `
 
 const NameMessageContainer = styled.div`
-    
+    z-index:1;
     h2 {
         font-family:Impact;
         font-size:1rem;
@@ -42,6 +45,7 @@ const NameMessageContainer = styled.div`
         margin-left:-5px;
     }
 `
+
 
 
 function Messages({ socket, messages,users,usersColors}) {
@@ -82,6 +86,7 @@ function Messages({ socket, messages,users,usersColors}) {
 
                 )})}
         </MessageList>
+
     );
     
 }

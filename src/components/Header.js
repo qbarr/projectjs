@@ -2,9 +2,9 @@
 import arrow from "../assets/chat/arrow.svg"
 import share from "../assets/chat/share.svg"
 import virgil from "../assets/chat/names/virgil.svg"
-import cube from "../assets/chat/cube.svg"
 import styled from '@emotion/styled'
 import { Link } from "react-router-dom";
+import cube from "../assets/chat/cube.svg"
 
 const HeaderContainer = styled.div`
     height:100px;
@@ -13,12 +13,14 @@ const HeaderContainer = styled.div`
     position:fixed;
     width:100%;
     background-color:white;
+    z-index:2;
 `
 const Fleche = styled.img`
     width:26px;
     margin-left:20px;
     top:50%;
     margin-top:100%;
+    
 `
 
 const Croix = styled.img`
@@ -59,7 +61,8 @@ function Header(){
                 <img alt="" src={virgil}/>
             </NameContainer>
             <Croix src={share} alt=""/>
-            <ImageCube alt="" src={cube} />
+{/*             <ImageCube alt="" src={cube} />
+ */}
         </HeaderContainer>
     );
 }

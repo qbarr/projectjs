@@ -6,7 +6,7 @@ import NameInput from '../components/NameInput';
 import MessageInput from '../components/MessageInput';
 import Messages from '../components/Messages';
 import Users from '../components/Users';
-
+import PlacerImages from '../components/PlacerImages.js'
 const AppContainer = styled.div`
 `
 const AppInner = styled.div`
@@ -22,6 +22,8 @@ function Chat({socket,messages, users,usersColors}) {
             <AppInner>
             {socket && (
             <>
+
+                <PlacerImages/>
                 <Header/>
                 
                 <Messages

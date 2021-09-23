@@ -66,13 +66,16 @@ function App() {
     const messageListener = (message) => {
       scroll.scrollToBottom()
       setMessages((prevMessages) =>{
-          return [...prevMessages,typeof message.value === "string" && message]
+        
+          return [...prevMessages,typeof message.value === "string"&& message.value.length<150 && message]
       })
     }
 
     const messagesListener = (listMessages) => {
         const cleanMessages = listMessages.filter((msg)=>{
-            return typeof msg.value === "string"&& msg;
+          console.log('length',msg.value);
+
+            return typeof msg.value === "string"&& msg.value.length<150 && msg;
         })
         setMessages(cleanMessages);
         scroll.scrollToBottom({duration:0})

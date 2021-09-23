@@ -14,7 +14,7 @@ function Footer({socket}) {
         width:100%;
         position:fixed;
         bottom:0;    
-        
+        z-index:2;
         background-color:white;
 
     `
@@ -25,7 +25,6 @@ function Footer({socket}) {
         top:50%;
         transform:translate(-50%,-50%);    
         width:80%; 
-        height:55%;
         display:flex;
         justify-content:space-between;
     `
@@ -50,24 +49,19 @@ function Footer({socket}) {
         width:100%;
     `
 
-    const Etoile = styled.img`
-        position:absolute;
-        top:-70%;
-        left:20%;
-        z-index:-1;
-    `
+
 
     const submitForm = (e)=> {
         e.preventDefault();
-        if(message.length<10)socket.emit("message", message);
+        if(message.length<150)socket.emit("message", message);
         setMessage("");
     }
 
     return (
         <FooterContainer>
-            <Etoile src={etoile}/>
             <Line/>
-            <SubContainer>
+            <SubContainer
+            >
              
                 <MessageInput
                     submitForm={submitForm}
