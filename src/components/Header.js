@@ -10,7 +10,9 @@ const HeaderContainer = styled.div`
     height:100px;
     display:flex;
     justify-content:space-between;
-    position:relative;
+    position:fixed;
+    width:100%;
+    background-color:white;
 `
 const Fleche = styled.img`
     width:26px;

@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import ChoosePage from "./pages/ChoosePage";
 import Chat from "./pages/Chat";
+import {animateScroll as scroll } from 'react-scroll'
+import { scrollToBottom } from "react-scroll/modules/mixins/animate-scroll";
 
 const COLORS = [
   "#DE4B42", //red
@@ -27,6 +29,8 @@ function App() {
 
 
   useEffect(()=> {
+  
+
     socket.on('connect',()=>setLoading(false))
     socket.on("users",newUsers => {
       newUsers.forEach((element,i) => {
@@ -38,11 +42,13 @@ function App() {
 
     socket.on("updateUsername",(userToUpdate)=>{
       setUsers((prevUsers)=>{
+        userToUpdate['color']=COLORS[Math.floor(Math.random(5))];
         return prevUsers.map((user)=>user.id===userToUpdate.id ? userToUpdate:user)
       })
     })
 
     socket.on("userConnection",(user) => {
+      user['color']=COLORS[Math.floor(Math.random(5))];
       setUsers(prevUsers => {
         return [...prevUsers,user];
       })   
@@ -50,7 +56,7 @@ function App() {
 
     socket.on("userDisconnection",(userDisconnect)=>{
       setUsers(prevUsers => {
-  
+        
         return prevUsers.filter(user=>user.id!==userDisconnect.id)
       })
     }) 
@@ -58,17 +64,20 @@ function App() {
     socket.emit("getUsers");
 
     const messageListener = (message) => {
+      scroll.scrollToBottom()
       setMessages((prevMessages) =>{
           return [...prevMessages,typeof message.value === "string" && message]
       })
     }
 
     const messagesListener = (listMessages) => {
-        console.log('prevMESSAGES',listMessages);
         const cleanMessages = listMessages.filter((msg)=>{
-            return typeof msg.value === "string";
+            return typeof msg.value === "string"&& msg;
         })
         setMessages(cleanMessages);
+        scroll.scrollToBottom({duration:0})
+
+
     }
 
     socket.on("messages",messagesListener);
@@ -86,21 +95,20 @@ function App() {
 
   return (
     <Router>
-     
-
       <Switch>
-     
+        
+        <Route path="/choosePage">
+         { socket && !loading &&<ChoosePage/>}
+        </Route>
+
         <Route path="/">
           {socket && !loading &&<Chat
             socket={socket}
             users={users}
             messages={messages}
+            usersColors={COLORS}
           />}
         </Route>
-        <Route path="/choosePage">
-         { socket && !loading &&<ChoosePage/>}
-        </Route>
-
       </Switch>
     </Router>
   );

@@ -28,8 +28,9 @@ function MessageInput({submitForm,message,setMessage}) {
                 autoFocus
                 value={message}
                 placeholder="send a message..."
+                maxlength="10"
                 onChange={(e) => {
-                setMessage(e.currentTarget.value);
+                 setMessage(e.currentTarget.value);
                 }}
             />
         </FormSendMessage>

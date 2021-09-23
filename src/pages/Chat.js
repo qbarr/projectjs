@@ -8,13 +8,13 @@ import Messages from '../components/Messages';
 import Users from '../components/Users';
 
 const AppContainer = styled.div`
-
 `
 const AppInner = styled.div`
+
 `
 
 
-function Chat({socket,messages, users}) {
+function Chat({socket,messages, users,usersColors}) {
 
 
     return (
@@ -27,6 +27,8 @@ function Chat({socket,messages, users}) {
                 <Messages
                     socket={socket}
                     messages={messages}
+                    users={users}
+                    usersColors={usersColors}
                 />
                 
                 {/* <Users 

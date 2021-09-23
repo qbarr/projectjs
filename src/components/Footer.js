@@ -59,7 +59,7 @@ function Footer({socket}) {
 
     const submitForm = (e)=> {
         e.preventDefault();
-        socket.emit("message", message);
+        if(message.length<10)socket.emit("message", message);
         setMessage("");
     }
 
