@@ -7,13 +7,15 @@ import MessageInput from '../components/MessageInput';
 import Messages from '../components/Messages';
 import Users from '../components/Users';
 
-function Chat({socket,users,usersColors}) {
+const AppContainer = styled.div`
 
-    const AppContainer = styled.div`
+`
+const AppInner = styled.div`
+`
 
-    `
-    const AppInner = styled.div`
-    `  
+
+function Chat({socket,messages, users}) {
+
 
     return (
         <AppContainer>
@@ -21,25 +23,19 @@ function Chat({socket,users,usersColors}) {
             {socket && (
             <>
                 <Header/>
-
-                {/* <NameInput
-                socket={socket}
-                /> */}
                 
                 <Messages
                     socket={socket}
-                    usersColors={usersColors}
-                    users={users}
+                    messages={messages}
                 />
                 
-                <Users 
+                {/* <Users 
                     socket={socket}
                     users={users}
                 />
-
+ */}
                 <Footer 
                     socket={socket}
-                    usersColors={usersColors}
                 />
                 
             </>)}

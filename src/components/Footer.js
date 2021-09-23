@@ -4,7 +4,7 @@ import etoile from "../assets/chat/etoile.svg"
 import MessageInput from './MessageInput'
 import React, { useState, useEffect, useRef } from "react";
 
-function Footer({socket,usersColors}) {
+function Footer({socket}) {
 
 
     const [message,setMessage] = useState([]);

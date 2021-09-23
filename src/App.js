@@ -18,47 +18,68 @@ const COLORS = [
   "#EB66A6" //pink
 ]
 
+const socket = io(`https://whispering-chamber-09886.herokuapp.com`);
 
 function App() {
   const [users,setUsers] = useState([]);
-  const [usersColors,setUsersColor] = useState([]);
-  const [socket,setSocket] =useState(null);
   const [loading,setLoading] =useState(null);
-  useEffect(()=> {
-    const newSocket = io(`https://whispering-chamber-09886.herokuapp.com`);
-    newSocket.on('connect',()=>setLoading(false))
-    newSocket.on("users",users => {
-      setUsers(users)
+  const [messages, setMessages] = useState([]);
 
-      let tempUsersColors = []
-      console.log('length',users.length);
-      for(let i=0;i<users.length;i++) {
-        tempUsersColors.push({id:users[i].id,color:COLORS[i%5]})
-      }
-      console.log("temp",tempUsersColors);
-      setUsersColor(tempUsersColors);
+
+  useEffect(()=> {
+    socket.on('connect',()=>setLoading(false))
+    socket.on("users",newUsers => {
+      newUsers.forEach((element,i) => {
+        element['color']=COLORS[i%5];
+        console.log(element.color);
+      });
+      setUsers(newUsers)
     })
-    newSocket.on("updateUsername",(userToUpdate)=>{
+
+    socket.on("updateUsername",(userToUpdate)=>{
       setUsers((prevUsers)=>{
         return prevUsers.map((user)=>user.id===userToUpdate.id ? userToUpdate:user)
       })
     })
-    newSocket.on("userConnection",(user) => {
+
+    socket.on("userConnection",(user) => {
       setUsers(prevUsers => {
         return [...prevUsers,user];
       })   
     })
-    newSocket.on("userDisconnection",(userDisconnect)=>{
+
+    socket.on("userDisconnection",(userDisconnect)=>{
       setUsers(prevUsers => {
   
         return prevUsers.filter(user=>user.id!==userDisconnect.id)
       })
     }) 
-    newSocket.emit("getUsers");
-    setSocket(newSocket);
+
+    socket.emit("getUsers");
+
+    const messageListener = (message) => {
+      setMessages((prevMessages) =>{
+          return [...prevMessages,typeof message.value === "string" && message]
+      })
+    }
+
+    const messagesListener = (listMessages) => {
+        console.log('prevMESSAGES',listMessages);
+        const cleanMessages = listMessages.filter((msg)=>{
+            return typeof msg.value === "string";
+        })
+        setMessages(cleanMessages);
+    }
+
+    socket.on("messages",messagesListener);
+    socket.on("message",messageListener);
+    socket.emit("getMessages");
+
     return () => {
-      newSocket.off("userConnection");
-      newSocket.off("userDisconnection");
+      socket.off("messages", messagesListener);
+      socket.off("message", messageListener);
+      socket.off("userConnection");
+      socket.off("userDisconnection");
     }
     
   },[]);
@@ -73,7 +94,7 @@ function App() {
           {socket && !loading &&<Chat
             socket={socket}
             users={users}
-            usersColors={usersColors}
+            messages={messages}
           />}
         </Route>
         <Route path="/choosePage">
