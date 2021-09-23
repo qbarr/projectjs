@@ -1,9 +1,8 @@
 import styled from "@emotion/styled";
 import React, { useState, useEffect, useRef } from "react";
 
-function MessageInput({socket}) {
+function MessageInput({submitForm,message,setMessage}) {
 
-    const [message,setMessage] = useState([]);
     
     const InputSendMessage = styled.input` 
         width:100%;
@@ -22,11 +21,7 @@ function MessageInput({socket}) {
         width:70%;
     `
     
-    const submitForm = (e)=> {
-        e.preventDefault();
-        socket.emit("message", message);
-        setMessage("");
-    }
+    
     return(
         <FormSendMessage onSubmit={submitForm}>
             <InputSendMessage

@@ -1,9 +1,13 @@
-import React from 'react'
 import styled from '@emotion/styled'
 import arrowSend from '../assets/chat/arrow-send.svg'
 import etoile from "../assets/chat/etoile.svg"
 import MessageInput from './MessageInput'
+import React, { useState, useEffect, useRef } from "react";
+
 function Footer({socket,usersColors}) {
+
+
+    const [message,setMessage] = useState([]);
 
     const FooterContainer = styled.div`
         height:84px;
@@ -31,6 +35,7 @@ function Footer({socket,usersColors}) {
         background-color:#FBDE48; 
         border-radius:10px;     
         position:relative;
+
         img {
             position:absolute;
             left:50%;
@@ -49,7 +54,14 @@ function Footer({socket,usersColors}) {
         position:absolute;
         top:-70%;
         left:20%;
+        z-index:-1;
     `
+
+    const submitForm = (e)=> {
+        e.preventDefault();
+        socket.emit("message", message);
+        setMessage("");
+    }
 
     return (
         <FooterContainer>
@@ -58,9 +70,11 @@ function Footer({socket,usersColors}) {
             <SubContainer>
              
                 <MessageInput
-                    socket={socket}
+                    submitForm={submitForm}
+                    message={message}
+                    setMessage={setMessage}
                 />
-                <ButtonSendContainer>
+                <ButtonSendContainer onClick={submitForm}>
                     <img alt="" src={arrowSend}/>
                     
                 </ButtonSendContainer>

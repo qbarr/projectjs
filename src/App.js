@@ -1,17 +1,15 @@
 import { io } from "socket.io-client";
-import styled from '@emotion/styled'
-import Header from './components/Header';
-import NameInput from './components/NameInput';
-import MessageInput from './components/MessageInput';
-import Messages from './components/Messages';
-import Users from './components/Users';
-import React,{useEffect,useState} from "react";
-import Footer from "./components/Footer";
-const AppContainer = styled.div`
 
-`
-const AppInner = styled.div`
-`
+import React,{useEffect,useState} from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import ChoosePage from "./pages/ChoosePage";
+import Chat from "./pages/Chat";
+
 const COLORS = [
   "#DE4B42", //red
   "#FBDE48", //yellow
@@ -20,14 +18,16 @@ const COLORS = [
   "#EB66A6" //pink
 ]
 
-const socket = io(`https://whispering-chamber-09886.herokuapp.com`);
 
 function App() {
   const [users,setUsers] = useState([]);
   const [usersColors,setUsersColor] = useState([]);
-
+  const [socket,setSocket] =useState(null);
+  const [loading,setLoading] =useState(null);
   useEffect(()=> {
-    socket.on("users",users => {
+    const newSocket = io(`https://whispering-chamber-09886.herokuapp.com`);
+    newSocket.on('connect',()=>setLoading(false))
+    newSocket.on("users",users => {
       setUsers(users)
 
       let tempUsersColors = []
@@ -38,63 +38,50 @@ function App() {
       console.log("temp",tempUsersColors);
       setUsersColor(tempUsersColors);
     })
-     socket.on("updateUsername",(userToUpdate)=>{
+    newSocket.on("updateUsername",(userToUpdate)=>{
       setUsers((prevUsers)=>{
         return prevUsers.map((user)=>user.id===userToUpdate.id ? userToUpdate:user)
       })
     })
-    socket.on("userConnection",(user) => {
+    newSocket.on("userConnection",(user) => {
       setUsers(prevUsers => {
         return [...prevUsers,user];
       })   
     })
-    socket.on("userDisconnection",(userDisconnect)=>{
+    newSocket.on("userDisconnection",(userDisconnect)=>{
       setUsers(prevUsers => {
   
         return prevUsers.filter(user=>user.id!==userDisconnect.id)
       })
     }) 
-    socket.emit("getUsers");
-  
+    newSocket.emit("getUsers");
+    setSocket(newSocket);
     return () => {
-      socket.off("userConnection");
-      socket.off("userDisconnection");
+      newSocket.off("userConnection");
+      newSocket.off("userDisconnection");
     }
     
   },[]);
 
   return (
+    <Router>
+     
 
-      <AppContainer>
-        <AppInner>
-          {socket && (
-          <>
-            <Header/>
+      <Switch>
+     
+        <Route path="/">
+          {socket && !loading &&<Chat
+            socket={socket}
+            users={users}
+            usersColors={usersColors}
+          />}
+        </Route>
+        <Route path="/choosePage">
+         { socket && !loading &&<ChoosePage/>}
+        </Route>
 
-            {/* <NameInput
-              socket={socket}
-            /> */}
-            
-            <Messages
-              socket={socket}
-              usersColors={usersColors}
-              users={users}
-            />
-            
-            <Users 
-              socket={socket}
-              users={users}
-            />
-
-            <Footer 
-              socket={socket}
-              usersColors={usersColors}
-            />
-            
-          </>)}
-        </AppInner>
-      </AppContainer>
-
+      </Switch>
+    </Router>
   );
 }
 

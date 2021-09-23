@@ -25,7 +25,7 @@ function Messages({ socket,users,usersColors }) {
         font-family:Georgia;
         font-weight:bold;
         font-size:0.875rem;
-        background-color:${props => props.color} ;
+        background-color:blue;
         text-align:center;
         height: ${props => props.nbChar < 5 ? '38px' : props.nbChar < 8 ? '84px' : props.nbChar < 12 ? '155px' : '121px'}; 
         width: ${props => props.nbChar < 5 ? '116px' : props.nbChar < 8 ? '206px' : props.nbChar < 12 ? '253px' : '323px'}; 
@@ -49,37 +49,35 @@ function Messages({ socket,users,usersColors }) {
     
 
     useEffect(()=>{
-        const messageListener = (message) => {
-            socket.off("messages", messagesListener);
-            setMessages((prevMessages) =>{
-                return [...prevMessages,typeof message.value === "string" && message]
-            })
-        } 
+            const messageListener = (message) => {
+                setMessages((prevMessages) =>{
+                    return [...prevMessages,typeof message.value === "string" && message]
+                })
+            } 
+            console.log('salut',socket);
+            const messagesListener = (listMessages) => {
+                console.log('prevMESSAGES',listMessages);
+                const cleanMessages = listMessages.filter((msg)=>{
+                    return typeof msg.value === "string";
+                })
+                setMessages(cleanMessages);
+            } 
+            socket.on("messages",messagesListener);
+            socket.on("message",messageListener);
+            socket.emit("getMessages");
 
-        const messagesListener = (listMessages) => {
-            console.log('prevMESSAGES',listMessages);
-            const cleanMessages = listMessages.filter((msg)=>{
-                return typeof msg.value === "string";
-            })
-            setMessages((prevMessages) =>{
-                return [...prevMessages,...cleanMessages];
-            });
-        } 
-        socket.on("messages",messagesListener);
-        socket.emit("getMessages");
-        socket.on("message",messageListener);
- 
-        return () => {
-            socket.off("messages", messagesListener);
-            socket.off("message", messageListener);
-        };
+            return () => {
+                socket.off("messages", messagesListener);
+                socket.off("message", messageListener);
+            };
+      
     },[socket]);
     
     return(
         <MessageList>
             {messages
                 .sort((a, b) => b.time - a.time)
-                .map((message) => { console.log('usercolor',usersColors);return (
+                .map((message) => { return (
                 <LineContainer 
                     isMine={socket.id===message.user.id}
                 >
