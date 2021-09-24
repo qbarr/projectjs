@@ -54,7 +54,7 @@ const ImageCube = styled.img`
 function Header(){
     return (
         <HeaderContainer>
-            <Link to="/choosePage">
+            <Link to="/userNamePage">
                 <Fleche src={arrow} alt=""/>
             </Link>
             <NameContainer>

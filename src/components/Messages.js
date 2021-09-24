@@ -1,5 +1,6 @@
 import React, { useEffect, useState,useRef } from "react";
 import styled from '@emotion/styled'
+import {animateScroll as scroll } from 'react-scroll'
 
 const MessageList = styled.div`
     margin:auto;
@@ -48,18 +49,20 @@ const NameMessageContainer = styled.div`
 
 
 
-function Messages({ socket, messages,users,usersColors}) {
+function Messages({ socket,users,messages,usersColors}) {
+ 
 
+   
     return(
         <MessageList>
             {messages
                 .sort((a, b) => a.time - b.time)
                 .map((message) => { 
-                    const user = users.filter(user => user.id===message.user.id)[0];
+                    const user = users.filter(usr => usr.id === message.user.id)[0];
                     if(user) {
-                        message['color'] =user.color
+                        message['color'] = user.color
                     } else {
-                        message['color'] = usersColors[Math.floor(Math.random(5))];
+                        message['color'] = usersColors[Math.floor(Math.random() * 5)];
                     }
 
                     return (
